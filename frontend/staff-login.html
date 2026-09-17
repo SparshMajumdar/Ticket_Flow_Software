@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Organization Staff Login — SupportFlow Precision Enterprise</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400..700,0..1,0">
+</head>
+<body class="auth-body" style="background: radial-gradient(at 0% 0%, rgba(30, 41, 59, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(0, 74, 198, 0.08) 0px, transparent 50%), #faf8ff;">
+
+  <!-- Header -->
+  <header class="auth-nav">
+    <a href="index.html" class="brand-group" style="text-decoration: none;">
+      <div class="brand-logo" style="background: #0f172a; color: #93c5fd;">
+        <span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="brand-title">SupportFlow</span>
+          <span class="brand-badge" style="background: #0f172a; color: #93c5fd;">Internal Ops</span>
+        </div>
+        <span style="font-size: 11px; color: var(--color-on-surface-variant); display: block; line-height: 1;">Ticket Management &amp; Triage Gateway</span>
+      </div>
+    </a>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 12px; color: var(--color-on-surface-variant);">External Customer?</span>
+      <a href="login.html" class="btn btn-outline btn-sm">
+        <span class="material-symbols-outlined text-[16px]">person</span>
+        <span>Customer Desk</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="auth-main">
+    <div class="auth-card-container wide">
+      
+      <!-- Card -->
+      <div class="auth-card staff-portal">
+        <div class="auth-header">
+          <div class="auth-badge staff">
+            <span class="material-symbols-outlined text-[14px]">shield</span>
+            <span>Restricted Internal Gateway</span>
+          </div>
+          <h1 class="auth-title">Organization Staff Sign In</h1>
+          <p class="auth-subtitle">Authorized access for incident dispatchers, engineering triage teams, and operations management.</p>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="security-notice-banner">
+          <span class="material-symbols-outlined text-[18px] text-primary" style="flex-shrink: 0; margin-top: 1px;">verified_user</span>
+          <div>
+            <strong>Corporate Access Boundary:</strong> Restricted to authenticated employees. All actions, assignment updates, and private internal notes are bound to deterministic audit clocks.
+          </div>
+        </div>
+
+        <!-- Quick 1-Click Selectable Staff Profiles -->
+        <div style="margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 12px; font-weight: 600; color: var(--color-on-surface);">Select Operator Profile for Instant Sign-In:</span>
+          <span style="font-size: 11px; color: var(--color-primary); font-weight: 600;">1-Click Fill</span>
+        </div>
+
+        <div class="staff-selector-grid" id="staffSelectorGrid">
+          <!-- Marcus Vance -->
+          <div class="staff-select-card active" data-email="marcus@supportflow.internal" data-pass="operator2026" data-name="Marcus Vance">
+            <div class="staff-select-avatar">MV</div>
+            <div class="staff-select-details">
+              <span class="staff-select-name">Marcus Vance</span>
+              <span class="staff-select-role">L3 Platform Engineer</span>
+            </div>
+          </div>
+
+          <!-- Elena Rostova -->
+          <div class="staff-select-card" data-email="elena@supportflow.internal" data-pass="operator2026" data-name="Elena Rostova">
+            <div class="staff-select-avatar" style="background: #312e81; color: #c7d2fe;">ER</div>
+            <div class="staff-select-details">
+              <span class="staff-select-name">Elena Rostova</span>
+              <span class="staff-select-role">Senior Support Lead</span>
+            </div>
+          </div>
+
+          <!-- David Kim -->
+          <div class="staff-select-card" data-email="david@supportflow.internal" data-pass="operator2026" data-name="David Kim">
+            <div class="staff-select-avatar" style="background: #064e3b; color: #a7f3d0;">DK</div>
+            <div class="staff-select-details">
+              <span class="staff-select-name">David Kim</span>
+              <span class="staff-select-role">Security &amp; Auth Lead</span>
+            </div>
+          </div>
+
+          <!-- SupportFlow Admin -->
+          <div class="staff-select-card" data-email="admin@supportflow.internal" data-pass="admin2026" data-name="SupportFlow Admin">
+            <div class="staff-select-avatar" style="background: #701a75; color: #f5d0fe;">AD</div>
+            <div class="staff-select-details">
+              <span class="staff-select-name">SupportFlow Admin</span>
+              <span class="staff-select-role">System Administrator</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert -->
+        <div id="staffAuthAlert" style="display: none; padding: 10px 14px; border-radius: var(--radius-md); background: #fef2f2; border: 1px solid #fecaca; color: var(--status-overdue); font-size: 12px; margin-bottom: 1rem; align-items: center; gap: 8px;">
+          <span class="material-symbols-outlined text-[18px]">error</span>
+          <span id="staffAuthAlertText">Unable to authenticate staff member.</span>
+        </div>
+
+        <!-- Staff Form -->
+        <form id="staffLoginForm" novalidate>
+          
+          <!-- Staff Email -->
+          <div class="form-group">
+            <label for="staffEmail" class="form-label">
+              <span>Organization Work Email</span>
+              <span style="font-weight: 400; color: var(--color-on-surface-variant); font-size: 11px;">@supportflow.internal</span>
+            </label>
+            <div class="input-icon-wrap">
+              <span class="material-symbols-outlined icon-leading">badge</span>
+              <input 
+                type="email" 
+                id="staffEmail" 
+                name="email" 
+                class="form-control" 
+                value="marcus@supportflow.internal" 
+                required 
+                autocomplete="email"
+              >
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px;">
+            <!-- Password -->
+            <div class="form-group">
+              <label for="staffPassword" class="form-label">Staff Credentials</label>
+              <div class="input-icon-wrap">
+                <span class="material-symbols-outlined icon-leading">key</span>
+                <input 
+                  type="password" 
+                  id="staffPassword" 
+                  name="password" 
+                  class="form-control has-trailing" 
+                  value="operator2026" 
+                  required 
+                  autocomplete="current-password"
+                >
+                <button type="button" class="password-toggle-btn" id="btnToggleStaffPassword" aria-label="Toggle password visibility">
+                  <span class="material-symbols-outlined text-[18px]" id="staffPassIcon">visibility</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2FA / Hardware Token Code -->
+            <div class="form-group">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label for="staffTotp" class="form-label">2FA Code</label>
+                <a href="#" id="btnGenerateTotp" style="font-size: 10px; color: var(--color-primary); text-decoration: none; font-weight: 600;">Auto-Fill</a>
+              </div>
+              <div class="input-icon-wrap">
+                <span class="material-symbols-outlined icon-leading">lock_clock</span>
+                <input 
+                  type="text" 
+                  id="staffTotp" 
+                  name="totp" 
+                  class="form-control" 
+                  placeholder="849 201" 
+                  value="732 918"
+                  maxlength="7"
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary" id="btnStaffSubmit" style="width: 100%; height: 42px; font-size: 14px; background: #0f172a; margin-top: 0.5rem;">
+            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+            <span>Authenticate &amp; Access Master Queue</span>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span>Enterprise SSO Gateway</span>
+        </div>
+
+        <!-- Single Sign-On Button -->
+        <button type="button" class="btn btn-outline" id="btnSsoLogin" style="width: 100%; height: 40px; font-size: 13px;">
+          <span class="material-symbols-outlined text-[18px] text-primary">domain</span>
+          <span>Sign In via Okta / Google Workspace SAML</span>
+        </button>
+
+      </div>
+
+      <!-- Link to Customer Portal -->
+      <div class="auth-alternate-box">
+        <div class="auth-alternate-info">
+          <span class="material-symbols-outlined icon text-[24px]">support_agent</span>
+          <div>
+            <div style="font-weight: 600; color: var(--color-on-surface);">Customer looking to track an incident?</div>
+            <div style="font-size: 11px; color: var(--color-on-surface-variant);">Access your personal incident dashboard and submit tickets</div>
+          </div>
+        </div>
+        <a href="login.html" class="btn btn-outline btn-sm">
+          <span>Customer Login</span>
+          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Interactive Toast Notification -->
+  <div class="toast-container" id="toastContainer">
+    <div class="toast" id="toastMessage">
+      <span class="material-symbols-outlined text-[18px] text-primary">check_circle</span>
+      <span id="toastText">Action successful</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/state.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const emailInput = document.getElementById('staffEmail');
+      const passInput = document.getElementById('staffPassword');
+      const totpInput = document.getElementById('staffTotp');
+      const toggleBtn = document.getElementById('btnToggleStaffPassword');
+      const toggleIcon = document.getElementById('staffPassIcon');
+      const form = document.getElementById('staffLoginForm');
+      const submitBtn = document.getElementById('btnStaffSubmit');
+      const ssoBtn = document.getElementById('btnSsoLogin');
+      const autoTotpBtn = document.getElementById('btnGenerateTotp');
+      const alertBox = document.getElementById('staffAuthAlert');
+      const alertText = document.getElementById('staffAuthAlertText');
+      const staffCards = document.querySelectorAll('.staff-select-card');
+
+      // Click card to select profile
+      staffCards.forEach(card => {
+        card.addEventListener('click', () => {
+          staffCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+
+          const email = card.getAttribute('data-email');
+          const pass = card.getAttribute('data-pass');
+          const name = card.getAttribute('data-name');
+
+          emailInput.value = email;
+          passInput.value = pass;
+          generateTotp();
+          hideAlert();
+          showToast(`Profile selected: ${name}`);
+        });
+      });
+
+      // Toggle password
+      toggleBtn.addEventListener('click', () => {
+        if (passInput.type === 'password') {
+          passInput.type = 'text';
+          toggleIcon.textContent = 'visibility_off';
+        } else {
+          passInput.type = 'password';
+          toggleIcon.textContent = 'visibility';
+        }
+      });
+
+      // Auto-generate OTP
+      function generateTotp() {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        totpInput.value = code.slice(0, 3) + ' ' + code.slice(3);
+      }
+
+      autoTotpBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        generateTotp();
+        showToast('Fresh 2FA security code generated');
+      });
+
+      // SSO login simulation
+      ssoBtn.addEventListener('click', () => {
+        const activeCard = document.querySelector('.staff-select-card.active');
+        const email = activeCard ? activeCard.getAttribute('data-email') : 'marcus@supportflow.internal';
+        
+        ssoBtn.disabled = true;
+        ssoBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[18px]" style="animation: spin 1s linear infinite;">sync</span>
+          <span>Exchanging Okta SAML Tokens...</span>
+        `;
+
+        setTimeout(() => {
+          const result = Api.loginStaff(email, 'sso_auth');
+          if (result.success) {
+            showToast(`SSO Authenticated as ${result.user.name} (${result.user.role})`);
+            setTimeout(() => {
+              window.location.href = 'index.html?role=staff';
+            }, 600);
+          }
+        }, 700);
+      });
+
+      // Standard form submit
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const email = emailInput.value.trim();
+        const password = passInput.value;
+
+        if (!email) {
+          showAlert('Please provide your organization email.');
+          emailInput.focus();
+          return;
+        }
+
+        if (!password) {
+          showAlert('Please provide your staff password.');
+          passInput.focus();
+          return;
+        }
+
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[18px]" style="animation: spin 1s linear infinite;">progress_activity</span>
+          <span>Verifying Staff Credentials &amp; RBAC...</span>
+        `;
+
+        setTimeout(() => {
+          const result = Api.loginStaff(email, password);
+
+          if (result.success) {
+            submitBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[18px]">verified</span>
+              <span>Authorized! Entering Master Queue...</span>
+            `;
+            submitBtn.style.backgroundColor = 'var(--status-resolved)';
+
+            showToast(`Welcome, ${result.user.name}! Accessing Triage Workspace.`);
+
+            setTimeout(() => {
+              window.location.href = 'index.html?role=staff';
+            }, 800);
+          } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+            submitBtn.style.backgroundColor = '';
+            showAlert(result.message || 'Authentication failed. Please verify your staff credentials.');
+          }
+        }, 600);
+      });
+
+      function showAlert(msg) {
+        alertText.textContent = msg;
+        alertBox.style.display = 'flex';
+      }
+
+      function hideAlert() {
+        alertBox.style.display = 'none';
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById('toastContainer');
+        const text = document.getElementById('toastText');
+        if (!toast || !text) return;
+        text.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+    });
+  </script>
+</body>
+</html>

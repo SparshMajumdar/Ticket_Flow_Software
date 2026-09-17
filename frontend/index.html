@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SupportFlow — Customer Ticket Management System</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Global Navigation Bar -->
+  <header class="top-nav">
+    <div class="brand-group">
+      <div class="brand-logo">
+        <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="brand-title">SupportFlow</span>
+          <span class="brand-badge">Enterprise</span>
+        </div>
+        <span style="font-size: 11px; color: var(--color-on-surface-variant); display: block; line-height: 1;">Ticket Management &amp; Triage</span>
+      </div>
+    </div>
+
+    <!-- Center Segmented Role Switcher -->
+    <div class="role-segmented-control">
+      <button type="button" class="role-tab-btn active" id="roleBtnCustomer">
+        <span class="material-symbols-outlined text-[16px]">person</span>
+        <span>Customer Desk</span>
+      </button>
+      <button type="button" class="role-tab-btn" id="roleBtnStaff">
+        <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+        <span>Staff / Admin Desk</span>
+      </button>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="nav-actions">
+      <!-- Notification Bell -->
+      <button type="button" class="icon-btn" id="topNotifBtn" onclick="NotificationsCenter.openDrawer()" aria-label="Notifications">
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
+        <span class="badge-count" id="topNotifBadge">3</span>
+      </button>
+
+      <!-- Active User Profile Chip & Dropdown -->
+      <div class="user-menu-wrapper">
+        <div class="user-profile-chip" id="topUserChip" title="Click to view account menu">
+          <div class="user-avatar" id="topUserAvatar">SJ</div>
+          <div class="user-info">
+            <span class="user-name" id="topUserName">Sarah Jenkins</span>
+            <span class="user-role" id="topUserRole">Acme Corp (Customer)</span>
+          </div>
+          <span class="material-symbols-outlined text-[16px]" style="color: var(--color-outline);">arrow_drop_down</span>
+        </div>
+
+        <!-- User Dropdown Menu -->
+        <div class="user-dropdown-menu" id="topUserDropdown">
+          <div class="user-dropdown-header">
+            <span class="name" id="menuUserName">Sarah Jenkins</span>
+            <span class="email" id="menuUserEmail">sarah@acme.com</span>
+          </div>
+
+          <a href="login.html" class="user-dropdown-item">
+            <span class="material-symbols-outlined text-[18px]">person</span>
+            <span>Customer Login Page</span>
+          </a>
+
+          <a href="signup.html" class="user-dropdown-item">
+            <span class="material-symbols-outlined text-[18px]">person_add</span>
+            <span>Customer Sign Up Page</span>
+          </a>
+
+          <a href="staff-login.html" class="user-dropdown-item">
+            <span class="material-symbols-outlined text-[18px]">badge</span>
+            <span>Organization Staff Portal</span>
+          </a>
+
+          <div class="user-dropdown-divider"></div>
+
+          <button type="button" class="user-dropdown-item danger" id="btnUserSignOut">
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+            <span>Sign Out Session</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Secondary Sub Navigation Bar -->
+  <nav class="sub-nav">
+    <!-- Customer Sub Nav -->
+    <div class="view-tabs" id="customerSubNav">
+      <button type="button" class="view-tab active">
+        <span class="material-symbols-outlined text-[18px]">inbox</span>
+        <span>My Support Tickets</span>
+      </button>
+    </div>
+
+    <!-- Staff Sub Nav -->
+    <div class="view-tabs" id="staffSubNav" style="display: none;">
+      <button type="button" class="view-tab active" id="tabStaffQueue">
+        <span class="material-symbols-outlined text-[18px]">rule_folder</span>
+        <span>Master Ticket Queue</span>
+      </button>
+      <button type="button" class="view-tab" id="tabStaffAnalytics">
+        <span class="material-symbols-outlined text-[18px]">bar_chart</span>
+        <span>Operations Analytics</span>
+      </button>
+    </div>
+
+    <!-- Quick New Ticket Trigger (Customer only) -->
+    <div id="customerQuickAction">
+      <button type="button" class="btn btn-primary btn-sm" onclick="App.openModal('newTicketModal')">
+        <span class="material-symbols-outlined text-[16px]">add</span>
+        <span>New Support Ticket</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="app-main">
+
+    <!-- ========================================================================= -->
+    <!-- 1. CUSTOMER DESK VIEW                                                    -->
+    <!-- ========================================================================= -->
+    <section id="customerDeskSection">
+      <!-- Metrics Overview -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Active Tickets</span>
+            <span class="material-symbols-outlined text-[18px] text-primary">pending_actions</span>
+          </div>
+          <div class="metric-value" id="custMetricActive">2</div>
+          <div class="metric-subtext">Currently in review or assigned</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Resolved Tickets</span>
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-resolved);">task_alt</span>
+          </div>
+          <div class="metric-value" id="custMetricResolved">1</div>
+          <div class="metric-subtext">Issues successfully fixed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Service Commitment</span>
+            <span class="material-symbols-outlined text-[18px] text-tertiary">verified_user</span>
+          </div>
+          <div class="metric-value" style="font-size: 1.25rem;">15m SLA</div>
+          <div class="metric-subtext">24/7 Enterprise Tier Guarantee</div>
+        </div>
+      </div>
+
+      <!-- Action & Filter Bar -->
+      <div class="action-bar">
+        <div class="search-box">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" id="customerSearchInput" placeholder="Search my tickets by ID, subject, or category...">
+          <span class="search-shortcut">⌘K</span>
+        </div>
+
+        <div class="filter-tabs" id="customerFilterTabs">
+          <button type="button" class="filter-pill active" data-filter="all">All</button>
+          <button type="button" class="filter-pill" data-filter="open">Open / Assigned</button>
+          <button type="button" class="filter-pill" data-filter="inprogress">In Progress</button>
+          <button type="button" class="filter-pill" data-filter="resolved">Resolved</button>
+          <button type="button" class="filter-pill" data-filter="closed">Closed</button>
+        </div>
+      </div>
+
+      <!-- Customer Ticket Feed -->
+      <div class="ticket-list" id="customerTicketList">
+        <!-- Rendered dynamically by customer.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 2. ADMIN / STAFF OPERATIONS QUEUE VIEW                                    -->
+    <!-- ========================================================================= -->
+    <section id="adminDeskSection" style="display: none;">
+      <!-- Operational Stat Counters -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Active Queue</span>
+            <span class="material-symbols-outlined text-[18px] text-primary">dynamic_feed</span>
+          </div>
+          <div class="metric-value" id="adminMetricActive">4</div>
+          <div class="metric-subtext">Total incidents across queues</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Unassigned</span>
+            <span class="material-symbols-outlined text-[18px] text-tertiary">person_off</span>
+          </div>
+          <div class="metric-value" id="adminMetricUnassigned" style="color: var(--color-tertiary);">1</div>
+          <div class="metric-subtext">Requires agent dispatch</div>
+        </div>
+        <div class="metric-card alert-card">
+          <div class="metric-header">
+            <span>SLA At Risk</span>
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-escalated);">alarm</span>
+          </div>
+          <div class="metric-value" id="adminMetricRisk">2</div>
+          <div class="metric-subtext">&lt; 120m or overdue</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Escalated</span>
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-escalated);">bolt</span>
+          </div>
+          <div class="metric-value" id="adminMetricEscalated" style="color: var(--status-escalated);">1</div>
+          <div class="metric-subtext">Supervisor priority queue</div>
+        </div>
+      </div>
+
+      <!-- Action & Queue Filter Bar -->
+      <div class="action-bar">
+        <div class="search-box">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" id="adminSearchInput" placeholder="Search all tickets by ID, customer, employee, or subject...">
+          <span class="search-shortcut">⌘K</span>
+        </div>
+
+        <div class="filter-tabs" id="adminFilterTabs">
+          <button type="button" class="filter-pill active" data-filter="all">All</button>
+          <button type="button" class="filter-pill" data-filter="unassigned">Unassigned</button>
+          <button type="button" class="filter-pill" data-filter="critical">Critical</button>
+          <button type="button" class="filter-pill" data-filter="risk">SLA At Risk</button>
+          <button type="button" class="filter-pill" data-filter="escalated">Escalated</button>
+          <button type="button" class="filter-pill" data-filter="closed">Closed</button>
+        </div>
+      </div>
+
+      <!-- Master Ticket Queue Cards -->
+      <div class="ticket-list" id="adminTicketList">
+        <!-- Rendered dynamically by admin.js -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. ADMIN ANALYTICS & METRICS VIEW                                         -->
+    <!-- ========================================================================= -->
+    <section id="analyticsDeskSection" style="display: none;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-on-surface);">Operations &amp; SLA Compliance Dashboard</h2>
+        <p style="font-size: 13px; color: var(--color-on-surface-variant);">Live service level performance, volume distributions, and resolution health.</p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Total Logged Incidents</span>
+            <span class="material-symbols-outlined text-[18px] text-primary">data_usage</span>
+          </div>
+          <div class="metric-value" id="anaTotal">5</div>
+          <div class="metric-subtext">Lifetime across all domains</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Resolved / Closed</span>
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-resolved);">check_circle</span>
+          </div>
+          <div class="metric-value" id="anaResolved" style="color: var(--status-resolved);">1</div>
+          <div class="metric-subtext">Successful completions</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>Total Escalations</span>
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-escalated);">crisis_alert</span>
+          </div>
+          <div class="metric-value" id="anaEscalated" style="color: var(--status-escalated);">1</div>
+          <div class="metric-subtext">Incidents elevated</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span>SLA Compliance Rate</span>
+            <span class="material-symbols-outlined text-[18px] text-primary">trending_up</span>
+          </div>
+          <div class="metric-value" id="anaCompliance" style="color: var(--color-primary);">80%</div>
+          <div class="metric-subtext">Within guaranteed deadline</div>
+        </div>
+      </div>
+
+      <div class="analytics-section">
+        <!-- Status Breakdown Card -->
+        <div class="chart-card">
+          <div class="chart-title">
+            <span>Volume by Lifecycle Status</span>
+            <span class="material-symbols-outlined text-[18px] text-outline">pie_chart</span>
+          </div>
+          <div id="chartStatusBars">
+            <!-- Rendered by admin.js -->
+          </div>
+        </div>
+
+        <!-- Priority Breakdown Card -->
+        <div class="chart-card">
+          <div class="chart-title">
+            <span>Volume by Priority Level</span>
+            <span class="material-symbols-outlined text-[18px] text-outline">tune</span>
+          </div>
+          <div id="chartPriorityBars">
+            <!-- Rendered by admin.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: NEW TICKET CREATION (CUSTOMER)                                     -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="newTicketModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Create New Support Request</h3>
+        <button type="button" class="icon-btn" onclick="App.closeModal('newTicketModal')" aria-label="Close modal">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form id="newTicketForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="ticketSubject">Ticket Subject *</label>
+            <input type="text" id="ticketSubject" class="form-control" placeholder="e.g. Webhook signature verification failing after key rotation" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label" for="ticketCategory">Category</label>
+              <select id="ticketCategory" class="form-control">
+                <option value="API & Webhooks">API &amp; Webhooks</option>
+                <option value="Authentication">Authentication &amp; SSO</option>
+                <option value="Billing & Finance">Billing &amp; Finance</option>
+                <option value="Infrastructure">Infrastructure &amp; Uptime</option>
+                <option value="Feature Request">Feature Request</option>
+                <option value="General Support">General Support</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="ticketPriority">Priority</label>
+              <select id="ticketPriority" class="form-control">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical (Production Blocker)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ticketDescription">Detailed Description *</label>
+            <textarea id="ticketDescription" class="form-control" rows="4" placeholder="Please provide steps to reproduce, error codes, and affected environments..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Attachments (Logs, Screenshots, Headers)</label>
+            <div class="file-upload-zone" onclick="document.getElementById('customerTicketFileInput').click()">
+              <span class="material-symbols-outlined text-[28px] text-primary mb-1">cloud_upload</span>
+              <p style="font-size: 12px; font-weight: 600; color: var(--color-on-surface);">Click or drop files to upload</p>
+              <p style="font-size: 11px; color: var(--color-outline);">Max file size: 25MB (PNG, JSON, LOG, CSV, XML)</p>
+              <input type="file" id="customerTicketFileInput" multiple style="display: none;">
+            </div>
+            <div id="customerAttachmentChips" class="attachment-chips"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="App.closeModal('newTicketModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined text-[16px]">send</span>
+            <span>Submit Ticket</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CUSTOMER TICKET DETAILS & CONVERSATION                             -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="ticketDetailsModal">
+    <div class="modal-container" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="ticketDetailsTitle">Ticket Details</h3>
+        <button type="button" class="icon-btn" onclick="App.closeModal('ticketDetailsModal')" aria-label="Close modal">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body" id="ticketDetailsBody">
+        <!-- Rendered dynamically by customer.js -->
+      </div>
+
+      <div class="modal-footer" id="ticketDetailsActions">
+        <!-- Rendered dynamically by customer.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADMIN TRIAGE CONSOLE & AUDIT TRAIL                                 -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="adminConsoleModal">
+    <div class="modal-container" style="max-width: 760px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="adminConsoleTitle">Admin Triage Console</h3>
+        <button type="button" class="icon-btn" onclick="App.closeModal('adminConsoleModal')" aria-label="Close modal">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body" id="adminConsoleBody">
+        <!-- Rendered dynamically by admin.js -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="App.closeModal('adminConsoleModal')">Close Console</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- SLIDE-OVER DRAWER: NOTIFICATIONS & ALERTS                                 -->
+  <!-- ========================================================================= -->
+  <div class="drawer-backdrop" id="notificationsDrawerBackdrop" onclick="if(event.target===this) NotificationsCenter.closeDrawer();">
+    <aside class="drawer-panel">
+      <div class="drawer-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-symbols-outlined text-[20px] text-primary">notifications_active</span>
+          <h3 style="font-size: 15px; font-weight: 700; color: var(--color-on-surface);">Alerts &amp; Activity</h3>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="NotificationsCenter.markAllAsRead()">
+            <span class="material-symbols-outlined text-[14px]">done_all</span>
+            <span>Mark read</span>
+          </button>
+          <button type="button" class="icon-btn" onclick="NotificationsCenter.closeDrawer()" aria-label="Close drawer">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="padding: 10px 16px; border-bottom: 1px solid var(--color-border); background: var(--color-surface-container-low);">
+        <div class="filter-tabs" id="notifFilterTabs">
+          <button type="button" class="filter-pill active" data-notif-filter="all">All</button>
+          <button type="button" class="filter-pill" data-notif-filter="unread">Unread</button>
+          <button type="button" class="filter-pill" data-notif-filter="sla">SLA Warnings</button>
+          <button type="button" class="filter-pill" data-notif-filter="mentions">Mentions</button>
+        </div>
+      </div>
+
+      <div class="drawer-body" id="drawerNotifFeed">
+        <!-- Rendered dynamically by notifications.js -->
+      </div>
+    </aside>
+  </div>
+
+  <!-- Interactive Action Toast Notification -->
+  <div class="toast-container" id="actionToastContainer">
+    <div class="toast">
+      <span class="material-symbols-outlined text-[18px]" style="color: #60a5fa;">check_circle</span>
+      <span id="actionToastText">Operation successful</span>
+    </div>
+  </div>
+
+  <!-- Application Modules Script Inclusions -->
+  <script src="js/state.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/customer.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
