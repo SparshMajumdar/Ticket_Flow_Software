@@ -29,7 +29,9 @@ const Api = (function() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.CUSTOMERS)) {
       localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify([
-        { ...INITIAL_USERS.customer, password: 'password123' }
+        { ...INITIAL_USERS.customer, password: 'password123' },
+        { id: 'usr_9420', name: 'Robert Hastings', email: 'robert@globex.io', company: 'Globex Corp', role: 'customer', avatarText: 'RH', password: 'password123' },
+        { id: 'usr_9430', name: 'Michael Chen', email: 'mchen@infinisys.com', company: 'InfiniSys Global', role: 'customer', avatarText: 'MC', password: 'password123' }
       ]));
     }
     if (!localStorage.getItem(STORAGE_KEYS.STAFF)) {
@@ -194,6 +196,47 @@ const Api = (function() {
 
       this.setSession(user, 'customer');
       return { success: true, user };
+    },
+
+    loginCustomerMagicLink(email) {
+      initStorage();
+      const customers = this.getRegisteredCustomers();
+      const normalizedEmail = email.trim().toLowerCase();
+
+      let user = customers.find(c => c.email.toLowerCase() === normalizedEmail);
+      if (!user && (normalizedEmail === 'sarah@acme.com' || normalizedEmail === 'customer@supportflow.internal')) {
+        user = INITIAL_USERS.customer;
+      }
+
+      if (!user) {
+        // Auto-provision temporary demo user for frictionless magic link testing
+        const domain = normalizedEmail.split('@')[1] || 'company.com';
+        const companyName = domain.split('.')[0].toUpperCase();
+        user = {
+          id: 'usr_' + Math.floor(1000 + Math.random() * 9000),
+          name: normalizedEmail.split('@')[0].replace('.', ' ').toUpperCase(),
+          email: normalizedEmail,
+          company: companyName,
+          role: 'customer',
+          avatarText: normalizedEmail.substring(0, 2).toUpperCase()
+        };
+      }
+
+      this.setSession(user, 'customer');
+      return { success: true, user };
+    },
+
+    resetCustomerPassword(email, newPassword) {
+      initStorage();
+      const customers = this.getRegisteredCustomers();
+      const normalizedEmail = email.trim().toLowerCase();
+
+      const index = customers.findIndex(c => c.email.toLowerCase() === normalizedEmail);
+      if (index !== -1) {
+        customers[index].password = newPassword;
+        localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+      }
+      return { success: true, message: 'Password reset successful! You can now log in with your new credentials.' };
     },
 
     loginStaff(email, password) {

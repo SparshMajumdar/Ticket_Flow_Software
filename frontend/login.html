@@ -10,7 +10,7 @@
 </head>
 <body class="auth-body">
 
-  <!-- Minimal Top Header -->
+  <!-- Minimal Top Header Navigation -->
   <header class="auth-nav">
     <a href="index.html" class="brand-group" style="text-decoration: none;">
       <div class="brand-logo">
@@ -26,6 +26,10 @@
     </a>
 
     <div style="display: flex; align-items: center; gap: 12px;">
+      <div class="showcase-status-pill" style="margin-bottom: 0; padding: 4px 10px; display: none;" id="navSystemStatus">
+        <span class="pulse-dot"></span>
+        <span>Systems Operational</span>
+      </div>
       <a href="staff-login.html" class="btn btn-outline btn-sm">
         <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
         <span>Staff / Admin Portal</span>
@@ -36,48 +40,161 @@
     </div>
   </header>
 
-  <!-- Main Auth Container -->
+  <!-- Main Auth Container (Split View) -->
   <main class="auth-main">
-    <div class="auth-card-container">
+    <div class="auth-card-container wide-split">
       
-      <!-- Primary Card -->
+      <!-- Left Column: Customer Portal Showcase Panel -->
+      <aside class="auth-showcase-panel">
+        <div>
+          <div class="showcase-header">
+            <div class="showcase-status-pill">
+              <span class="pulse-dot"></span>
+              <span>All Systems Operational • 99.99% SLA Uptime</span>
+            </div>
+            <h1 class="showcase-title">Precision Customer Support Desk</h1>
+            <p class="showcase-desc">Track active incidents in real time, collaborate directly with assigned tier engineers, and monitor live SLA commitments.</p>
+          </div>
+
+          <!-- Real-Time Platform Metrics Grid -->
+          <div class="showcase-metrics">
+            <div class="metric-card">
+              <div class="metric-value">99.8%</div>
+              <div class="metric-label">SLA Fulfillment</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">4.2m</div>
+              <div class="metric-label">Avg First Response</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">1,482</div>
+              <div class="metric-label">Resolved MTTR</div>
+            </div>
+          </div>
+
+          <!-- Core Value Bullet Points -->
+          <div class="showcase-features">
+            <div class="showcase-feature-item">
+              <span class="material-symbols-outlined icon">verified_user</span>
+              <div>
+                <strong>Deterministic SLA Timers:</strong> Real-time clock tracking for response &amp; resolution guarantees.
+              </div>
+            </div>
+            <div class="showcase-feature-item">
+              <span class="material-symbols-outlined icon">forum</span>
+              <div>
+                <strong>Direct Engineer Channel:</strong> Communicate with dedicated L2/L3 platform dispatchers.
+              </div>
+            </div>
+            <div class="showcase-feature-item">
+              <span class="material-symbols-outlined icon">lock</span>
+              <div>
+                <strong>SOC2 Type II Audit Trails:</strong> Cryptographic integrity &amp; role-based asset privacy.
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Testimonial -->
+          <div class="showcase-quote">
+            "SupportFlow reduced our critical incident MTTR by over 60%. The SLA transparency is unmatched."
+            <div class="showcase-quote-author">— Sarah Jenkins, VP Operations at Acme Corp</div>
+          </div>
+        </div>
+
+        <!-- Compliance Badges Footer -->
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1.5rem;">
+          <span style="display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined text-[14px]" style="color: #60a5fa;">shield</span>
+            SOC2 Type II Certified
+          </span>
+          <span>•</span>
+          <span style="display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined text-[14px]" style="color: #60a5fa;">lock</span>
+            256-Bit E2E Encrypted
+          </span>
+        </div>
+      </aside>
+
+      <!-- Right Column: Authentication Card -->
       <div class="auth-card">
         <div class="auth-header">
           <div class="auth-badge">
             <span class="material-symbols-outlined text-[14px]">support_agent</span>
             <span>Customer Service Desk</span>
           </div>
-          <h1 class="auth-title">Customer Sign In</h1>
-          <p class="auth-subtitle">Track your incident reports, collaborate with assigned engineers, and monitor live SLA commitments.</p>
+          <h2 class="auth-title">Customer Sign In</h2>
+          <p class="auth-subtitle">Access your organization ticket workspace &amp; SLAs.</p>
         </div>
 
-        <!-- Quick Demo Autofill helper -->
-        <div class="demo-quick-bar">
-          <div class="demo-quick-info">
-            <span class="material-symbols-outlined text-[18px] text-primary">key</span>
-            <div>Demo: <strong>sarah@acme.com</strong></div>
-          </div>
-          <button type="button" class="demo-quick-btn" id="btnQuickDemo">
-            <span>Autofill Demo</span>
-            <span class="material-symbols-outlined text-[14px]">flash_on</span>
+        <!-- Auth Method Tabs: Password vs Magic Link OTP -->
+        <div class="auth-type-tabs">
+          <button type="button" class="auth-type-tab active" id="tabPassword">
+            <span class="material-symbols-outlined text-[16px]">key</span>
+            <span>Password Sign-In</span>
+          </button>
+          <button type="button" class="auth-type-tab" id="tabOtp">
+            <span class="material-symbols-outlined text-[16px]">mark_email_unread</span>
+            <span>Magic OTP Code</span>
           </button>
         </div>
 
-        <!-- Alert box for errors -->
+        <!-- Interactive Quick Demo Customer Selector -->
+        <div class="customer-selector-wrapper">
+          <div class="customer-selector-header">
+            <span style="font-size: 11px; font-weight: 700; color: var(--color-on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em;">1-Click Demo Customer Sign-In:</span>
+            <span style="font-size: 10px; color: var(--color-primary); font-weight: 600;">Select Persona</span>
+          </div>
+          <div class="customer-selector-grid" id="customerSelectorGrid">
+            <!-- Persona 1: Sarah Jenkins (Acme Corp) -->
+            <div class="customer-select-card active" data-email="sarah@acme.com" data-pass="password123" data-name="Sarah Jenkins" data-company="Acme Corp">
+              <div class="customer-card-header">
+                <div class="customer-avatar-badge">SJ</div>
+                <div class="customer-tier-tag">Enterprise</div>
+              </div>
+              <div class="customer-card-name">Sarah Jenkins</div>
+              <div class="customer-card-company">Acme Corp</div>
+            </div>
+
+            <!-- Persona 2: Robert Hastings (Globex Corp) -->
+            <div class="customer-select-card" data-email="robert@globex.io" data-pass="password123" data-name="Robert Hastings" data-company="Globex Corp">
+              <div class="customer-card-header">
+                <div class="customer-avatar-badge" style="background: #0284c7;">RH</div>
+                <div class="customer-tier-tag" style="background: rgba(2,132,199,0.1); color: #0284c7;">Premium</div>
+              </div>
+              <div class="customer-card-name">Robert Hastings</div>
+              <div class="customer-card-company">Globex Corp</div>
+            </div>
+
+            <!-- Persona 3: Michael Chen (InfiniSys) -->
+            <div class="customer-select-card" data-email="mchen@infinisys.com" data-pass="password123" data-name="Michael Chen" data-company="InfiniSys">
+              <div class="customer-card-header">
+                <div class="customer-avatar-badge" style="background: #7c3aed;">MC</div>
+                <div class="customer-tier-tag" style="background: rgba(124,58,237,0.1); color: #7c3aed;">VIP Priority</div>
+              </div>
+              <div class="customer-card-name">Michael Chen</div>
+              <div class="customer-card-company">InfiniSys Global</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert Box for errors -->
         <div id="authAlert" style="display: none; padding: 10px 14px; border-radius: var(--radius-md); background: #fef2f2; border: 1px solid #fecaca; color: var(--status-overdue); font-size: 12px; margin-bottom: 1rem; align-items: center; gap: 8px;">
           <span class="material-symbols-outlined text-[18px]">error</span>
           <span id="authAlertText">Invalid credentials</span>
         </div>
 
-        <!-- Login Form -->
+        <!-- Form Mode 1: Standard Password Form -->
         <form id="customerLoginForm" novalidate>
           
           <!-- Corporate Email -->
           <div class="form-group">
-            <label for="customerEmail" class="form-label">
-              <span>Work Email Address</span>
-              <span style="font-weight: 400; color: var(--color-on-surface-variant); font-size: 11px;">Corporate domain</span>
-            </label>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <label for="customerEmail" class="form-label">Work Email Address</label>
+              <div id="domainBadge" class="domain-detect-chip" style="display: none;">
+                <span class="material-symbols-outlined text-[12px]">domain</span>
+                <span id="domainBadgeText">Acme Corp</span>
+              </div>
+            </div>
             <div class="input-icon-wrap">
               <span class="material-symbols-outlined icon-leading">mail</span>
               <input 
@@ -85,6 +202,7 @@
                 id="customerEmail" 
                 name="email" 
                 class="form-control" 
+                value="sarah@acme.com" 
                 placeholder="name@company.com" 
                 required 
                 autocomplete="email"
@@ -93,7 +211,7 @@
           </div>
 
           <!-- Password -->
-          <div class="form-group">
+          <div class="form-group" id="passwordGroup">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <label for="customerPassword" class="form-label">Password</label>
               <a href="#" id="forgotPasswordLink" style="font-size: 11px; color: var(--color-primary); text-decoration: none; font-weight: 600;">Forgot password?</a>
@@ -105,6 +223,7 @@
                 id="customerPassword" 
                 name="password" 
                 class="form-control has-trailing" 
+                value="password123"
                 placeholder="••••••••••••" 
                 required 
                 autocomplete="current-password"
@@ -113,13 +232,19 @@
                 <span class="material-symbols-outlined text-[18px]" id="passwordToggleIcon">visibility</span>
               </button>
             </div>
+
+            <!-- Caps Lock Warning Indicator -->
+            <div class="caps-lock-warning" id="capsLockWarning">
+              <span class="material-symbols-outlined text-[14px]">warning</span>
+              <span><strong>Caps Lock</strong> is currently enabled</span>
+            </div>
           </div>
 
-          <!-- Remember & Security Check -->
+          <!-- Remember & Security Options -->
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
             <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-on-surface-variant); cursor: pointer; user-select: none;">
               <input type="checkbox" id="rememberMe" checked style="accent-color: var(--color-primary); cursor: pointer;">
-              <span>Keep me authenticated for 30 days</span>
+              <span>Keep authenticated for 30 days</span>
             </label>
           </div>
 
@@ -130,9 +255,81 @@
           </button>
         </form>
 
+        <!-- Form Mode 2: Magic Link / OTP Code Form (Hidden by default) -->
+        <form id="customerOtpForm" style="display: none;" novalidate>
+          <div class="form-group">
+            <label for="otpEmail" class="form-label">Corporate Email for Verification Code</label>
+            <div class="input-icon-wrap">
+              <span class="material-symbols-outlined icon-leading">mail</span>
+              <input 
+                type="email" 
+                id="otpEmail" 
+                class="form-control" 
+                value="sarah@acme.com" 
+                placeholder="name@company.com" 
+                required
+              >
+            </div>
+          </div>
+
+          <!-- OTP Input Step Container -->
+          <div id="otpStepBox">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: 600; color: var(--color-on-surface);">Enter 6-Digit One-Time Code:</span>
+              <a href="#" id="btnAutoFillOtp" style="font-size: 11px; color: var(--color-primary); font-weight: 600; text-decoration: none;">Auto-Fill Code</a>
+            </div>
+
+            <!-- 6 Digit OTP Box Grid -->
+            <div class="otp-input-group">
+              <input type="text" maxlength="1" class="otp-box" value="4" data-index="0">
+              <input type="text" maxlength="1" class="otp-box" value="8" data-index="1">
+              <input type="text" maxlength="1" class="otp-box" value="2" data-index="2">
+              <input type="text" maxlength="1" class="otp-box" value="9" data-index="3">
+              <input type="text" maxlength="1" class="otp-box" value="1" data-index="4">
+              <input type="text" maxlength="1" class="otp-box" value="7" data-index="5">
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+              <span>Code sent to inbox</span>
+              <span id="otpCountdownTimer" style="color: var(--color-primary); font-weight: 600;">Resend in 45s</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="btnOtpSubmit" style="width: 100%; height: 42px; font-size: 14px;">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span>Authenticate via Magic OTP</span>
+          </button>
+        </form>
+
         <!-- Divider -->
         <div class="auth-divider">
-          <span>Don't have an account?</span>
+          <span>Enterprise Single Sign-On (SSO)</span>
+        </div>
+
+        <!-- SSO Options Grid -->
+        <div class="sso-grid" style="margin-bottom: 1.25rem;">
+          <button type="button" class="btn-sso" id="btnSsoGoogle" title="Sign in with Google Workspace">
+            <svg class="sso-icon" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          <button type="button" class="btn-sso" id="btnSsoMicrosoft" title="Sign in with Microsoft 365">
+            <svg class="sso-icon" viewBox="0 0 23 23">
+              <path fill="#f35325" d="M1 1h10v10H1z"/>
+              <path fill="#81bc06" d="M12 1h10v10H12z"/>
+              <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+              <path fill="#ffba08" d="M12 12h10v10H12z"/>
+            </svg>
+            <span>Microsoft</span>
+          </button>
+          <button type="button" class="btn-sso" id="btnSsoOkta" title="Sign in with Okta SAML">
+            <span class="material-symbols-outlined text-[16px] text-primary">domain</span>
+            <span>Okta SAML</span>
+          </button>
         </div>
 
         <!-- Link to Customer Signup -->
@@ -142,41 +339,90 @@
         </a>
       </div>
 
-      <!-- Staff Alternate Switcher Box -->
-      <div class="auth-alternate-box">
-        <div class="auth-alternate-info">
-          <span class="material-symbols-outlined icon text-[24px]">badge</span>
-          <div>
-            <div style="font-weight: 600; color: var(--color-on-surface);">Support Operator or Admin?</div>
-            <div style="font-size: 11px; color: var(--color-on-surface-variant);">Access internal master queue, assignment &amp; triage</div>
-          </div>
-        </div>
-        <a href="staff-login.html" class="btn btn-outline btn-sm">
-          <span>Staff Gateway</span>
-          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-        </a>
-      </div>
-
-      <!-- Compliance & SLA Footnote -->
-      <div class="auth-trust-row">
-        <span class="auth-trust-item">
-          <span class="material-symbols-outlined text-[15px] text-primary">verified</span>
-          <span>SOC2 Type II</span>
-        </span>
-        <span>•</span>
-        <span class="auth-trust-item">
-          <span class="material-symbols-outlined text-[15px] text-primary">lock</span>
-          <span>End-to-End Encrypted</span>
-        </span>
-        <span>•</span>
-        <span class="auth-trust-item">
-          <span class="material-symbols-outlined text-[15px] text-primary">schedule</span>
-          <span>99.99% SLA Uptime</span>
-        </span>
-      </div>
-
     </div>
   </main>
+
+  <!-- Interactive Password Recovery Modal -->
+  <div class="modal-backdrop" id="forgotPasswordModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-symbols-outlined text-primary text-[22px]">lock_reset</span>
+          <span class="modal-title">Password Security Recovery</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCloseModal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Step 1: Request Reset Code -->
+        <div id="modalStep1">
+          <p style="font-size: 13px; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Provide your registered corporate work email. We will issue a secure 6-digit verification pin and password reset token.
+          </p>
+          <div class="form-group">
+            <label for="resetEmail" class="form-label">Corporate Email Address</label>
+            <div class="input-icon-wrap">
+              <span class="material-symbols-outlined icon-leading">mail</span>
+              <input type="email" id="resetEmail" class="form-control" value="sarah@acme.com" placeholder="name@company.com">
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" id="btnSendResetCode" style="width: 100%;">
+            <span class="material-symbols-outlined text-[18px]">send</span>
+            <span>Dispatch Reset Verification PIN</span>
+          </button>
+        </div>
+
+        <!-- Step 2: Verify Pin & Set New Password (Hidden by default) -->
+        <div id="modalStep2" style="display: none;">
+          <div style="background: var(--color-surface-container-low); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--color-border); font-size: 12px; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-outlined text-[18px] text-primary">mark_email_read</span>
+            <div>Verification code dispatched to <strong id="resetTargetEmail">sarah@acme.com</strong></div>
+          </div>
+
+          <!-- Reset PIN -->
+          <div class="form-group">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <label for="resetPin" class="form-label">6-Digit Verification PIN</label>
+              <a href="#" id="btnAutoFillPin" style="font-size: 10px; color: var(--color-primary); font-weight: 600; text-decoration: none;">Auto-Fill PIN (948 201)</a>
+            </div>
+            <div class="input-icon-wrap">
+              <span class="material-symbols-outlined icon-leading">pin</span>
+              <input type="text" id="resetPin" class="form-control" value="948201" placeholder="948201">
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div class="form-group">
+            <label for="newPassword" class="form-label">New Account Password</label>
+            <div class="input-icon-wrap">
+              <span class="material-symbols-outlined icon-leading">lock</span>
+              <input type="password" id="newPassword" class="form-control" placeholder="Minimum 8 characters">
+            </div>
+
+            <!-- Password Strength Meter -->
+            <div class="password-meter-wrap" style="margin-top: 6px;">
+              <div class="password-meter-bars">
+                <div class="password-meter-segment" id="meterSeg1"></div>
+                <div class="password-meter-segment" id="meterSeg2"></div>
+                <div class="password-meter-segment" id="meterSeg3"></div>
+              </div>
+              <div class="password-meter-text">
+                <span id="meterText">Strength: Enter password</span>
+                <span style="font-size: 10px;">8+ chars, mixed case</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="btnUpdatePassword" style="width: 100%;">
+            <span class="material-symbols-outlined text-[18px]">published_with_changes</span>
+            <span>Update Password &amp; Sign In</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Interactive Toast Notification -->
   <div class="toast-container" id="toastContainer">
@@ -191,26 +437,122 @@
   <script src="js/api.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Elements
       const emailInput = document.getElementById('customerEmail');
       const passwordInput = document.getElementById('customerPassword');
       const toggleBtn = document.getElementById('btnTogglePassword');
       const toggleIcon = document.getElementById('passwordToggleIcon');
-      const quickDemoBtn = document.getElementById('btnQuickDemo');
       const form = document.getElementById('customerLoginForm');
       const submitBtn = document.getElementById('btnCustomerSubmit');
       const alertBox = document.getElementById('authAlert');
       const alertText = document.getElementById('authAlertText');
       const forgotLink = document.getElementById('forgotPasswordLink');
+      const capsLockWarning = document.getElementById('capsLockWarning');
+      const domainBadge = document.getElementById('domainBadge');
+      const domainBadgeText = document.getElementById('domainBadgeText');
 
-      // Autofill demo on button click
-      quickDemoBtn.addEventListener('click', () => {
-        emailInput.value = 'sarah@acme.com';
-        passwordInput.value = 'password123';
-        hideAlert();
-        showToast('Demo credentials populated (Sarah Jenkins / Acme Corp)');
+      // Customer Persona Cards
+      const customerCards = document.querySelectorAll('.customer-select-card');
+
+      // Auth Mode Tabs
+      const tabPassword = document.getElementById('tabPassword');
+      const tabOtp = document.getElementById('tabOtp');
+      const customerLoginForm = document.getElementById('customerLoginForm');
+      const customerOtpForm = document.getElementById('customerOtpForm');
+      const otpEmail = document.getElementById('otpEmail');
+      const btnOtpSubmit = document.getElementById('btnOtpSubmit');
+      const btnAutoFillOtp = document.getElementById('btnAutoFillOtp');
+      const otpBoxes = document.querySelectorAll('.otp-box');
+
+      // SSO Buttons
+      const btnSsoGoogle = document.getElementById('btnSsoGoogle');
+      const btnSsoMicrosoft = document.getElementById('btnSsoMicrosoft');
+      const btnSsoOkta = document.getElementById('btnSsoOkta');
+
+      // Modal Elements
+      const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+      const btnCloseModal = document.getElementById('btnCloseModal');
+      const modalStep1 = document.getElementById('modalStep1');
+      const modalStep2 = document.getElementById('modalStep2');
+      const resetEmail = document.getElementById('resetEmail');
+      const btnSendResetCode = document.getElementById('btnSendResetCode');
+      const resetPin = document.getElementById('resetPin');
+      const newPassword = document.getElementById('newPassword');
+      const btnUpdatePassword = document.getElementById('btnUpdatePassword');
+      const btnAutoFillPin = document.getElementById('btnAutoFillPin');
+      const resetTargetEmail = document.getElementById('resetTargetEmail');
+      const meterSeg1 = document.getElementById('meterSeg1');
+      const meterSeg2 = document.getElementById('meterSeg2');
+      const meterSeg3 = document.getElementById('meterSeg3');
+      const meterText = document.getElementById('meterText');
+
+      // Check email domain live
+      emailInput.addEventListener('input', updateDomainBadge);
+      updateDomainBadge();
+
+      function updateDomainBadge() {
+        const val = emailInput.value.trim().toLowerCase();
+        if (val.includes('@acme.com')) {
+          domainBadgeText.textContent = 'Acme Corp';
+          domainBadge.style.display = 'inline-flex';
+        } else if (val.includes('@globex.io')) {
+          domainBadgeText.textContent = 'Globex Corp';
+          domainBadge.style.display = 'inline-flex';
+        } else if (val.includes('@infinisys.com')) {
+          domainBadgeText.textContent = 'InfiniSys Global';
+          domainBadge.style.display = 'inline-flex';
+        } else if (val.includes('@')) {
+          const parts = val.split('@');
+          if (parts[1] && parts[1].includes('.')) {
+            const comp = parts[1].split('.')[0].toUpperCase();
+            domainBadgeText.textContent = comp + ' Domain';
+            domainBadge.style.display = 'inline-flex';
+          } else {
+            domainBadge.style.display = 'none';
+          }
+        } else {
+          domainBadge.style.display = 'none';
+        }
+      }
+
+      // Persona selector card clicks
+      customerCards.forEach(card => {
+        card.addEventListener('click', () => {
+          customerCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+
+          const email = card.getAttribute('data-email');
+          const pass = card.getAttribute('data-pass');
+          const name = card.getAttribute('data-name');
+          const company = card.getAttribute('data-company');
+
+          emailInput.value = email;
+          passwordInput.value = pass;
+          otpEmail.value = email;
+          updateDomainBadge();
+          hideAlert();
+          showToast(`Customer Persona Selected: ${name} (${company})`);
+        });
       });
 
-      // Toggle password visibility
+      // Caps Lock detector
+      passwordInput.addEventListener('keydown', (e) => {
+        if (e.getModifierState && e.getModifierState('CapsLock')) {
+          capsLockWarning.classList.add('show');
+        } else {
+          capsLockWarning.classList.remove('show');
+        }
+      });
+
+      passwordInput.addEventListener('keyup', (e) => {
+        if (e.getModifierState && e.getModifierState('CapsLock')) {
+          capsLockWarning.classList.add('show');
+        } else {
+          capsLockWarning.classList.remove('show');
+        }
+      });
+
+      // Password visibility toggle
       toggleBtn.addEventListener('click', () => {
         if (passwordInput.type === 'password') {
           passwordInput.type = 'text';
@@ -221,14 +563,114 @@
         }
       });
 
-      // Forgot Password trigger
-      forgotLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        const email = emailInput.value.trim() || 'sarah@acme.com';
-        alert(`A password reset authorization link has been dispatched to ${email}. For demo access, use password: password123`);
+      // Switch auth tabs (Password vs Magic OTP)
+      tabPassword.addEventListener('click', () => {
+        tabPassword.classList.add('active');
+        tabOtp.classList.remove('active');
+        customerLoginForm.style.display = 'block';
+        customerOtpForm.style.display = 'none';
+        hideAlert();
       });
 
-      // Form submission
+      tabOtp.addEventListener('click', () => {
+        tabOtp.classList.add('active');
+        tabPassword.classList.remove('active');
+        customerLoginForm.style.display = 'none';
+        customerOtpForm.style.display = 'block';
+        hideAlert();
+      });
+
+      // OTP Box auto-advance & navigation
+      otpBoxes.forEach((box, idx) => {
+        box.addEventListener('input', (e) => {
+          if (box.value.length === 1 && idx < otpBoxes.length - 1) {
+            otpBoxes[idx + 1].focus();
+          }
+        });
+
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !box.value && idx > 0) {
+            otpBoxes[idx - 1].focus();
+          }
+        });
+      });
+
+      btnAutoFillOtp.addEventListener('click', (e) => {
+        e.preventDefault();
+        const code = ['4', '8', '2', '9', '1', '7'];
+        otpBoxes.forEach((b, i) => b.value = code[i]);
+        showToast('Fresh OTP code autofilled into verification inputs');
+      });
+
+      // OTP Form Submission
+      customerOtpForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const email = otpEmail.value.trim();
+        const enteredCode = Array.from(otpBoxes).map(b => b.value).join('');
+
+        if (!email) {
+          showAlert('Please provide your corporate email for magic code login.');
+          otpEmail.focus();
+          return;
+        }
+
+        if (enteredCode.length < 6) {
+          showAlert('Please enter the full 6-digit magic OTP code.');
+          return;
+        }
+
+        btnOtpSubmit.disabled = true;
+        btnOtpSubmit.innerHTML = `
+          <span class="material-symbols-outlined text-[18px]" style="animation: spin 1s linear infinite;">sync</span>
+          <span>Verifying Magic OTP Code...</span>
+        `;
+
+        setTimeout(() => {
+          const result = Api.loginCustomerMagicLink(email);
+          if (result.success) {
+            btnOtpSubmit.innerHTML = `
+              <span class="material-symbols-outlined text-[18px]">check_circle</span>
+              <span>Magic Link Validated! Accessing Desk...</span>
+            `;
+            btnOtpSubmit.style.backgroundColor = 'var(--status-resolved)';
+            showToast(`Welcome, ${result.user.name}! Authenticated via Magic Code.`);
+
+            setTimeout(() => {
+              window.location.href = 'index.html?role=customer';
+            }, 700);
+          }
+        }, 700);
+      });
+
+      // SSO Button handlers
+      [
+        { btn: btnSsoGoogle, name: 'Google Workspace' },
+        { btn: btnSsoMicrosoft, name: 'Microsoft 365' },
+        { btn: btnSsoOkta, name: 'Okta Enterprise SAML' }
+      ].forEach(sso => {
+        sso.btn.addEventListener('click', () => {
+          const activeCard = document.querySelector('.customer-select-card.active');
+          const email = activeCard ? activeCard.getAttribute('data-email') : 'sarah@acme.com';
+
+          sso.btn.disabled = true;
+          const origText = sso.btn.innerHTML;
+          sso.btn.innerHTML = `<span class="material-symbols-outlined text-[16px]" style="animation: spin 1s linear infinite;">sync</span><span>SSO...</span>`;
+
+          setTimeout(() => {
+            const result = Api.loginCustomerMagicLink(email);
+            if (result.success) {
+              showToast(`Authenticated via ${sso.name} SSO as ${result.user.name} (${result.user.company})`);
+              setTimeout(() => {
+                window.location.href = 'index.html?role=customer';
+              }, 600);
+            }
+          }, 600);
+        });
+      });
+
+      // Standard Form Submission
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         hideAlert();
@@ -248,7 +690,6 @@
           return;
         }
 
-        // Show loading state
         const originalBtnText = submitBtn.innerHTML;
         submitBtn.disabled = true;
         submitBtn.innerHTML = `
@@ -262,11 +703,11 @@
           if (result.success) {
             submitBtn.innerHTML = `
               <span class="material-symbols-outlined text-[18px]">check_circle</span>
-              <span>Authenticated! Redirecting...</span>
+              <span>Authenticated! Opening Desk...</span>
             `;
             submitBtn.style.backgroundColor = 'var(--status-resolved)';
 
-            showToast(`Welcome back, ${result.user.name}!`);
+            showToast(`Welcome back, ${result.user.name} (${result.user.company})!`);
 
             setTimeout(() => {
               window.location.href = 'index.html?role=customer';
@@ -278,6 +719,91 @@
             showAlert(result.message || 'Unable to authenticate. Please check your credentials.');
           }
         }, 600);
+      });
+
+      // Forgot Password Modal Triggers
+      forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        resetEmail.value = emailInput.value.trim() || 'sarah@acme.com';
+        modalStep1.style.display = 'block';
+        modalStep2.style.display = 'none';
+        forgotPasswordModal.classList.add('show');
+      });
+
+      btnCloseModal.addEventListener('click', () => {
+        forgotPasswordModal.classList.remove('show');
+      });
+
+      forgotPasswordModal.addEventListener('click', (e) => {
+        if (e.target === forgotPasswordModal) {
+          forgotPasswordModal.classList.remove('show');
+        }
+      });
+
+      btnSendResetCode.addEventListener('click', () => {
+        const mail = resetEmail.value.trim();
+        if (!mail) {
+          alert('Please enter your work email.');
+          return;
+        }
+        resetTargetEmail.textContent = mail;
+        modalStep1.style.display = 'none';
+        modalStep2.style.display = 'block';
+        showToast('Verification PIN dispatched to ' + mail);
+      });
+
+      btnAutoFillPin.addEventListener('click', (e) => {
+        e.preventDefault();
+        resetPin.value = '948201';
+        showToast('PIN 948201 auto-filled');
+      });
+
+      // Password strength calculation
+      newPassword.addEventListener('input', () => {
+        const val = newPassword.value;
+        meterSeg1.className = 'password-meter-segment';
+        meterSeg2.className = 'password-meter-segment';
+        meterSeg3.className = 'password-meter-segment';
+
+        if (!val) {
+          meterText.textContent = 'Strength: Enter password';
+          return;
+        }
+
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10 && /[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+        if (val.length >= 12 && /[^A-Za-z0-9]/.test(val)) score++;
+
+        if (score === 1) {
+          meterSeg1.classList.add('weak');
+          meterText.textContent = 'Strength: Weak';
+        } else if (score === 2) {
+          meterSeg1.classList.add('medium');
+          meterSeg2.classList.add('medium');
+          meterText.textContent = 'Strength: Medium';
+        } else if (score >= 3) {
+          meterSeg1.classList.add('strong');
+          meterSeg2.classList.add('strong');
+          meterSeg3.classList.add('strong');
+          meterText.textContent = 'Strength: Strong';
+        }
+      });
+
+      btnUpdatePassword.addEventListener('click', () => {
+        const mail = resetEmail.value.trim();
+        const newPass = newPassword.value;
+
+        if (!newPass || newPass.length < 6) {
+          alert('Password must be at least 6 characters.');
+          return;
+        }
+
+        Api.resetCustomerPassword(mail, newPass);
+        forgotPasswordModal.classList.remove('show');
+        emailInput.value = mail;
+        passwordInput.value = newPass;
+        showToast('Password updated! Auto-filled into login fields.');
       });
 
       function showAlert(msg) {
@@ -295,7 +821,7 @@
         if (!toast || !text) return;
         text.textContent = msg;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
+        setTimeout(() => toast.classList.remove('show'), 3200);
       }
     });
   </script>
