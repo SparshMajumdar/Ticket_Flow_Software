@@ -4,7 +4,7 @@
  * to toggle seamlessly to the backend REST API once created.
  */
 
-const Api = (function() {
+const Api = (function () {
   const STORAGE_KEYS = {
     TICKETS: 'supportflow_tickets_v1',
     NOTIFICATIONS: 'supportflow_notifs_v1',
@@ -167,7 +167,7 @@ const Api = (function() {
           unread: true
         });
         localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(notifs));
-      } catch (e) {}
+      } catch (e) { }
 
       this.setSession(newCustomer, 'customer');
       return { success: true, user: newCustomer };
@@ -300,9 +300,14 @@ const Api = (function() {
       const newIdNumber = 8488 + tickets.length + Math.floor(Math.random() * 10) + 1;
       const newId = `SF-${newIdNumber}`;
 
-      // Default 4-hour SLA deadline for standard tickets, 1-hour for Critical
+      // Dynamic SLA deadline based on priority: Critical=60m, High=120m, Medium=240m, Low=1440m
+      let slaMinutes = 240;
+      if (payload.priority === 'Critical') slaMinutes = 60;
+      else if (payload.priority === 'High') slaMinutes = 120;
+      else if (payload.priority === 'Low') slaMinutes = 1440;
+      /*// Default 4-hour SLA deadline for standard tickets, 1-hour for Critical
       const slaMinutes = payload.priority === 'Critical' ? 60 : 240;
-      const deadlineDate = new Date(Date.now() + slaMinutes * 60 * 1000);
+      const deadlineDate = new Date(Date.now() + slaMinutes * 60 * 1000);*/
 
       const newTicket = {
         id: newId,
