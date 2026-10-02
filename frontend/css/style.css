@@ -1899,6 +1899,7 @@ textarea.form-control {
   letter-spacing: -0.02em;
   margin-bottom: 0.75rem;
   background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
