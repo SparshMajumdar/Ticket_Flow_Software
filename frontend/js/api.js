@@ -300,14 +300,9 @@ const Api = (function () {
       const newIdNumber = 8488 + tickets.length + Math.floor(Math.random() * 10) + 1;
       const newId = `SF-${newIdNumber}`;
 
-      // Dynamic SLA deadline based on priority: Critical=60m, High=120m, Medium=240m, Low=1440m
-      let slaMinutes = 240;
-      if (payload.priority === 'Critical') slaMinutes = 60;
-      else if (payload.priority === 'High') slaMinutes = 120;
-      else if (payload.priority === 'Low') slaMinutes = 1440;
-      /*// Default 4-hour SLA deadline for standard tickets, 1-hour for Critical
+      // Default 4-hour SLA deadline for standard tickets, 1-hour for Critical
       const slaMinutes = payload.priority === 'Critical' ? 60 : 240;
-      const deadlineDate = new Date(Date.now() + slaMinutes * 60 * 1000);*/
+      const deadlineDate = new Date(Date.now() + slaMinutes * 60 * 1000);
 
       const newTicket = {
         id: newId,
