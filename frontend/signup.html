@@ -49,6 +49,12 @@
           <p class="auth-subtitle">Register to report technical incidents, submit attachments, and collaborate directly with assigned tier engineers.</p>
         </div>
 
+        <!-- Live Registration Form Step Tracker -->
+        <div class="signup-step-tracker">
+          <span><strong id="formStepLabel">Account Profile &amp; Credentials</strong></span>
+          <span id="formStepProgress" style="font-weight: 600; color: var(--color-primary);">Completion: 0%</span>
+        </div>
+
         <!-- Quick Demo Autofill Helper -->
         <div class="demo-quick-bar">
           <div class="demo-quick-info">
@@ -108,10 +114,16 @@
 
           <!-- Work Email -->
           <div class="form-group">
-            <label for="workEmail" class="form-label">
-              <span>Work Email Address</span>
-              <span style="font-weight: 400; color: var(--color-on-surface-variant); font-size: 11px;">Corporate domain required</span>
-            </label>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <label for="workEmail" class="form-label">
+                <span>Work Email Address</span>
+                <span style="font-weight: 400; color: var(--color-on-surface-variant); font-size: 11px;">Corporate domain required</span>
+              </label>
+              <div id="domainBadge" class="domain-detect-chip" style="display: none;">
+                <span class="material-symbols-outlined text-[12px]">verified_user</span>
+                <span id="domainBadgeText">Verified Domain</span>
+              </div>
+            </div>
             <div class="input-icon-wrap">
               <span class="material-symbols-outlined icon-leading">mail</span>
               <input 
@@ -165,6 +177,12 @@
             </div>
           </div>
 
+          <!-- Caps Lock Warning -->
+          <div class="caps-lock-warning" id="signupCapsLockWarning" style="margin-bottom: 8px;">
+            <span class="material-symbols-outlined text-[14px]">warning</span>
+            <span><strong>Caps Lock</strong> is currently enabled</span>
+          </div>
+
           <!-- Password Strength Indicator -->
           <div class="password-meter-wrap" id="passwordMeterWrap">
             <div class="password-meter-bars">
@@ -178,8 +196,28 @@
             </div>
           </div>
 
+          <!-- Password Live Requirements Checklist -->
+          <div class="pass-req-grid" id="passReqGrid">
+            <div class="pass-req-item" id="reqLength">
+              <span class="material-symbols-outlined text-[14px] icon">check_circle</span>
+              <span>8+ Characters</span>
+            </div>
+            <div class="pass-req-item" id="reqUpper">
+              <span class="material-symbols-outlined text-[14px] icon">check_circle</span>
+              <span>Uppercase Letter</span>
+            </div>
+            <div class="pass-req-item" id="reqNumber">
+              <span class="material-symbols-outlined text-[14px] icon">check_circle</span>
+              <span>Number / Symbol</span>
+            </div>
+            <div class="pass-req-item" id="reqMatch">
+              <span class="material-symbols-outlined text-[14px] icon">check_circle</span>
+              <span>Passwords Match</span>
+            </div>
+          </div>
+
           <!-- SLA Support Tier Selection -->
-          <div class="form-group" style="margin-top: 1rem;">
+          <div class="form-group" style="margin-top: 1.25rem;">
             <label for="slaTier" class="form-label">
               <span>SLA Service Commitment Tier</span>
               <span style="font-weight: 400; color: var(--color-primary); font-size: 11px;">Guaranteed response times</span>
@@ -189,6 +227,12 @@
               <option value="business">Business Priority (1-Hour Response SLA)</option>
               <option value="standard">Standard Operations (4-Hour Response SLA)</option>
             </select>
+
+            <!-- Dynamic SLA Commitment Preview Badge -->
+            <div class="sla-preview-badge" id="slaPreviewBadge">
+              <span class="material-symbols-outlined text-[18px]">bolt</span>
+              <span id="slaPreviewText">Guaranteed 15-Minute Critical Incident Triage with L3 Engineer Assignment</span>
+            </div>
           </div>
 
           <!-- Terms Checkbox -->
@@ -262,12 +306,56 @@
       const alertBox = document.getElementById('signupAlert');
       const alertText = document.getElementById('signupAlertText');
       const termsCheck = document.getElementById('termsCheck');
+      const capsLockWarning = document.getElementById('signupCapsLockWarning');
+      const domainBadge = document.getElementById('domainBadge');
+      const domainBadgeText = document.getElementById('domainBadgeText');
+      const slaTierSelect = document.getElementById('slaTier');
+      const slaPreviewText = document.getElementById('slaPreviewText');
+      const formStepProgress = document.getElementById('formStepProgress');
 
       const seg1 = document.getElementById('meterSeg1');
       const seg2 = document.getElementById('meterSeg2');
       const seg3 = document.getElementById('meterSeg3');
       const meterLabel = document.getElementById('meterLabel');
       const matchLabel = document.getElementById('matchLabel');
+
+      const reqLength = document.getElementById('reqLength');
+      const reqUpper = document.getElementById('reqUpper');
+      const reqNumber = document.getElementById('reqNumber');
+      const reqMatch = document.getElementById('reqMatch');
+
+      // Live domain badge detector
+      emailInput.addEventListener('input', updateDomainBadge);
+      
+      function updateDomainBadge() {
+        const val = emailInput.value.trim().toLowerCase();
+        if (val.includes('@')) {
+          const parts = val.split('@');
+          if (parts[1] && parts[1].includes('.')) {
+            const domainName = parts[1].split('.')[0].toUpperCase();
+            domainBadgeText.textContent = `${domainName} Corporate Domain`;
+            domainBadge.style.display = 'inline-flex';
+          } else {
+            domainBadge.style.display = 'none';
+          }
+        } else {
+          domainBadge.style.display = 'none';
+        }
+        updateFormProgress();
+      }
+
+      // SLA Tier Change Preview
+      slaTierSelect.addEventListener('change', updateSlaPreview);
+      function updateSlaPreview() {
+        const tier = slaTierSelect.value;
+        if (tier === 'enterprise') {
+          slaPreviewText.textContent = 'Guaranteed 15-Minute Critical Incident Triage with L3 Engineer Assignment';
+        } else if (tier === 'business') {
+          slaPreviewText.textContent = 'Guaranteed 1-Hour Response SLA with Priority Queue Triage';
+        } else {
+          slaPreviewText.textContent = 'Standard 4-Hour SLA Guarantee with Standard Support Desk Triage';
+        }
+      }
 
       // Demo autofill button
       quickBtn.addEventListener('click', () => {
@@ -276,10 +364,12 @@
         emailInput.value = 'alex@novadynamics.io';
         passwordInput.value = 'NovaSecure2026!';
         confirmInput.value = 'NovaSecure2026!';
+        updateDomainBadge();
         evaluatePassword();
         checkPasswordMatch();
+        updateFormProgress();
         hideAlert();
-        showToast('Demo registration details pre-filled');
+        showToast('Demo registration details populated (Alex Mercer / Nova Dynamics)');
       });
 
       // Toggle password visibility
@@ -295,7 +385,37 @@
         }
       });
 
-      // Live Password Strength Meter
+      // Caps Lock warning detector
+      [passwordInput, confirmInput].forEach(inp => {
+        inp.addEventListener('keydown', (e) => {
+          if (e.getModifierState && e.getModifierState('CapsLock')) {
+            capsLockWarning.classList.add('show');
+          } else {
+            capsLockWarning.classList.remove('show');
+          }
+        });
+        inp.addEventListener('keyup', (e) => {
+          if (e.getModifierState && e.getModifierState('CapsLock')) {
+            capsLockWarning.classList.add('show');
+          } else {
+            capsLockWarning.classList.remove('show');
+          }
+        });
+      });
+
+      // Live Form Step Completion Progress
+      [nameInput, companyInput, emailInput, passwordInput, confirmInput].forEach(inp => {
+        inp.addEventListener('input', updateFormProgress);
+      });
+
+      function updateFormProgress() {
+        const fields = [nameInput.value, companyInput.value, emailInput.value, passwordInput.value, confirmInput.value];
+        const filled = fields.filter(f => f.trim().length > 0).length;
+        const pct = Math.round((filled / fields.length) * 100);
+        formStepProgress.textContent = `Completion: ${pct}%`;
+      }
+
+      // Live Password Strength Meter & Requirement Checklist
       passwordInput.addEventListener('input', () => {
         evaluatePassword();
         checkPasswordMatch();
@@ -310,6 +430,25 @@
         seg1.className = 'password-meter-segment';
         seg2.className = 'password-meter-segment';
         seg3.className = 'password-meter-segment';
+
+        // Update Checklist Items
+        if (val.length >= 8) {
+          reqLength.classList.add('valid');
+        } else {
+          reqLength.classList.remove('valid');
+        }
+
+        if (/[A-Z]/.test(val)) {
+          reqUpper.classList.add('valid');
+        } else {
+          reqUpper.classList.remove('valid');
+        }
+
+        if (/[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)) {
+          reqNumber.classList.add('valid');
+        } else {
+          reqNumber.classList.remove('valid');
+        }
 
         if (!val) {
           meterLabel.textContent = 'Password strength: Enter password';
@@ -345,15 +484,18 @@
 
         if (!confirm) {
           matchLabel.textContent = '';
+          reqMatch.classList.remove('valid');
           return;
         }
 
         if (pass === confirm) {
           matchLabel.textContent = '✓ Passwords match';
           matchLabel.style.color = 'var(--status-resolved)';
+          reqMatch.classList.add('valid');
         } else {
           matchLabel.textContent = '✗ Do not match';
           matchLabel.style.color = 'var(--status-overdue)';
+          reqMatch.classList.remove('valid');
         }
       }
 

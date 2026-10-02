@@ -2292,4 +2292,62 @@ textarea.form-control {
   gap: 10px;
 }
 
+/* Signup Page Interactive Enhancements */
+.signup-step-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-surface-container-low);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  margin-bottom: 1.25rem;
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.signup-step-tracker strong {
+  color: var(--color-primary);
+}
+
+.sla-preview-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pass-req-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pass-req-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  transition: color var(--transition-fast);
+}
+
+.pass-req-item.valid {
+  color: var(--status-resolved);
+  font-weight: 600;
+}
+
+.pass-req-item.valid .icon {
+  color: var(--status-resolved);
+}
+
+
 
