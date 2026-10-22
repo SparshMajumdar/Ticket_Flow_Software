@@ -6,8 +6,8 @@
   "scripts": {
     "start": "npx serve frontend",
     "dev": "npx serve frontend",
-    "build": "node -e \"console.log('SupportFlow Precision Enterprise: All static assets, portal controllers, and auth gates verified.')\"",
-    "test": "node -e \"console.log('Verification: Customer & Staff portal endpoints intact.')\""
+    "build": "node scripts/build-check.js",
+    "test": "node --test"
   },
   "keywords": [
     "ticket-management",

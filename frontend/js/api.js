@@ -4,7 +4,7 @@
  * to toggle seamlessly to the backend REST API once created.
  */
 
-const Api = (function() {
+const Api = (function () {
   const STORAGE_KEYS = {
     TICKETS: 'supportflow_tickets_v1',
     NOTIFICATIONS: 'supportflow_notifs_v1',
@@ -167,7 +167,7 @@ const Api = (function() {
           unread: true
         });
         localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(notifs));
-      } catch (e) {}
+      } catch (e) { }
 
       this.setSession(newCustomer, 'customer');
       return { success: true, user: newCustomer };
