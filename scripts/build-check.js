@@ -13,17 +13,32 @@ const requiredFiles = [
     "frontend/js/customer.js",
     "frontend/js/admin.js",
     "frontend/js/notifications.js",
-    "frontend/js/state.js"
+    "frontend/js/state.js",
+    "frontend/js/main.js",
+    "Dockerfile",
+    "docker-compose.yml",
+    ".github/workflows/ci-cd.yml"
 ];
 
 const missingFiles = requiredFiles.filter((file) =>
     !fs.existsSync(path.resolve(process.cwd(), file))
 );
 
-if (missingFiles.length > 0) {
-    console.error("Build check failed. Missing files:");
-    missingFiles.forEach((file) => console.error(`- ${file}`));
+const emptyFiles = requiredFiles.filter((file) => {
+    const fullPath = path.resolve(process.cwd(), file);
+    return fs.existsSync(fullPath) && fs.statSync(fullPath).size === 0;
+});
+
+if (missingFiles.length > 0 || emptyFiles.length > 0) {
+    if (missingFiles.length > 0) {
+        console.error("Build check failed. Missing files:");
+        missingFiles.forEach((file) => console.error(`- ${file}`));
+    }
+    if (emptyFiles.length > 0) {
+        console.error("Build check failed. Empty files:");
+        emptyFiles.forEach((file) => console.error(`- ${file}`));
+    }
     process.exit(1);
 }
 
-console.log("Build check passed: required application files exist.");
+console.log(`Build check passed: all ${requiredFiles.length} required application and deployment files exist and are populated.`);

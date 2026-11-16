@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>SupportFlow — Customer Ticket Management System</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <!-- Top Global Navigation Bar -->
@@ -20,7 +23,8 @@
           <span class="brand-title">SupportFlow</span>
           <span class="brand-badge">Enterprise</span>
         </div>
-        <span style="font-size: 11px; color: var(--color-on-surface-variant); display: block; line-height: 1;">Ticket Management &amp; Triage</span>
+        <span style="font-size: 11px; color: var(--color-on-surface-variant); display: block; line-height: 1;">Ticket
+          Management &amp; Triage</span>
       </div>
     </div>
 
@@ -39,7 +43,8 @@
     <!-- Right Actions -->
     <div class="nav-actions">
       <!-- Notification Bell -->
-      <button type="button" class="icon-btn" id="topNotifBtn" onclick="NotificationsCenter.openDrawer()" aria-label="Notifications">
+      <button type="button" class="icon-btn" id="topNotifBtn" onclick="NotificationsCenter.openDrawer()"
+        aria-label="Notifications">
         <span class="material-symbols-outlined text-[20px]">notifications</span>
         <span class="badge-count" id="topNotifBadge">3</span>
       </button>
@@ -52,7 +57,8 @@
             <span class="user-name" id="topUserName">Sarah Jenkins</span>
             <span class="user-role" id="topUserRole">Acme Corp (Customer)</span>
           </div>
-          <span class="material-symbols-outlined text-[16px]" style="color: var(--color-outline);">arrow_drop_down</span>
+          <span class="material-symbols-outlined text-[16px]"
+            style="color: var(--color-outline);">arrow_drop_down</span>
         </div>
 
         <!-- User Dropdown Menu -->
@@ -221,7 +227,8 @@
       <div class="action-bar">
         <div class="search-box">
           <span class="material-symbols-outlined search-icon">search</span>
-          <input type="text" id="adminSearchInput" placeholder="Search all tickets by ID, customer, employee, or subject...">
+          <input type="text" id="adminSearchInput"
+            placeholder="Search all tickets by ID, customer, employee, or subject...">
           <span class="search-shortcut">⌘K</span>
         </div>
 
@@ -246,8 +253,10 @@
     <!-- ========================================================================= -->
     <section id="analyticsDeskSection" style="display: none;">
       <div style="margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-on-surface);">Operations &amp; SLA Compliance Dashboard</h2>
-        <p style="font-size: 13px; color: var(--color-on-surface-variant);">Live service level performance, volume distributions, and resolution health.</p>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-on-surface);">Operations &amp; SLA
+          Compliance Dashboard</h2>
+        <p style="font-size: 13px; color: var(--color-on-surface-variant);">Live service level performance, volume
+          distributions, and resolution health.</p>
       </div>
 
       <div class="metrics-grid">
@@ -262,7 +271,8 @@
         <div class="metric-card">
           <div class="metric-header">
             <span>Resolved / Closed</span>
-            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-resolved);">check_circle</span>
+            <span class="material-symbols-outlined text-[18px]"
+              style="color: var(--status-resolved);">check_circle</span>
           </div>
           <div class="metric-value" id="anaResolved" style="color: var(--status-resolved);">1</div>
           <div class="metric-subtext">Successful completions</div>
@@ -270,7 +280,8 @@
         <div class="metric-card">
           <div class="metric-header">
             <span>Total Escalations</span>
-            <span class="material-symbols-outlined text-[18px]" style="color: var(--status-escalated);">crisis_alert</span>
+            <span class="material-symbols-outlined text-[18px]"
+              style="color: var(--status-escalated);">crisis_alert</span>
           </div>
           <div class="metric-value" id="anaEscalated" style="color: var(--status-escalated);">1</div>
           <div class="metric-subtext">Incidents elevated</div>
@@ -328,7 +339,8 @@
         <div class="modal-body">
           <div class="form-group">
             <label class="form-label" for="ticketSubject">Ticket Subject *</label>
-            <input type="text" id="ticketSubject" class="form-control" placeholder="e.g. Webhook signature verification failing after key rotation" required>
+            <input type="text" id="ticketSubject" class="form-control"
+              placeholder="e.g. Webhook signature verification failing after key rotation" required>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -357,15 +369,19 @@
 
           <div class="form-group">
             <label class="form-label" for="ticketDescription">Detailed Description *</label>
-            <textarea id="ticketDescription" class="form-control" rows="4" placeholder="Please provide steps to reproduce, error codes, and affected environments..." required></textarea>
+            <textarea id="ticketDescription" class="form-control" rows="4"
+              placeholder="Please provide steps to reproduce, error codes, and affected environments..."
+              required></textarea>
           </div>
 
           <div class="form-group">
             <label class="form-label">Attachments (Logs, Screenshots, Headers)</label>
             <div class="file-upload-zone" onclick="document.getElementById('customerTicketFileInput').click()">
               <span class="material-symbols-outlined text-[28px] text-primary mb-1">cloud_upload</span>
-              <p style="font-size: 12px; font-weight: 600; color: var(--color-on-surface);">Click or drop files to upload</p>
-              <p style="font-size: 11px; color: var(--color-outline);">Max file size: 25MB (PNG, JSON, LOG, CSV, XML)</p>
+              <p style="font-size: 12px; font-weight: 600; color: var(--color-on-surface);">Click or drop files to
+                upload</p>
+              <p style="font-size: 11px; color: var(--color-outline);">Max file size: 25MB (PNG, JSON, LOG, CSV, XML)
+              </p>
               <input type="file" id="customerTicketFileInput" multiple style="display: none;">
             </div>
             <div id="customerAttachmentChips" class="attachment-chips"></div>
@@ -422,7 +438,8 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" onclick="App.closeModal('adminConsoleModal')">Close Console</button>
+        <button type="button" class="btn btn-outline" onclick="App.closeModal('adminConsoleModal')">Close
+          Console</button>
       </div>
     </div>
   </div>
@@ -430,7 +447,8 @@
   <!-- ========================================================================= -->
   <!-- SLIDE-OVER DRAWER: NOTIFICATIONS & ALERTS                                 -->
   <!-- ========================================================================= -->
-  <div class="drawer-backdrop" id="notificationsDrawerBackdrop" onclick="if(event.target===this) NotificationsCenter.closeDrawer();">
+  <div class="drawer-backdrop" id="notificationsDrawerBackdrop"
+    onclick="if(event.target===this) NotificationsCenter.closeDrawer();">
     <aside class="drawer-panel">
       <div class="drawer-header">
         <div style="display: flex; align-items: center; gap: 8px;">
@@ -448,7 +466,8 @@
         </div>
       </div>
 
-      <div style="padding: 10px 16px; border-bottom: 1px solid var(--color-border); background: var(--color-surface-container-low);">
+      <div
+        style="padding: 10px 16px; border-bottom: 1px solid var(--color-border); background: var(--color-surface-container-low);">
         <div class="filter-tabs" id="notifFilterTabs">
           <button type="button" class="filter-pill active" data-notif-filter="all">All</button>
           <button type="button" class="filter-pill" data-notif-filter="unread">Unread</button>
@@ -478,5 +497,7 @@
   <script src="js/admin.js"></script>
   <script src="js/notifications.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/main.js"></script>
 </body>
+
 </html>
