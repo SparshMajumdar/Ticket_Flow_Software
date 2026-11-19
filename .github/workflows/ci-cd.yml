@@ -101,6 +101,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
+          load: true
           tags: |
             supportflow-ticket-system:latest
             supportflow-ticket-system:${{ github.sha }}
