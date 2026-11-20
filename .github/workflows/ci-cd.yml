@@ -155,8 +155,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/ticket-flow-system:latest
-            ghcr.io/${{ github.repository_owner }}/ticket-flow-system:${{ github.sha }}
+              ghcr.io/sparshmajumdar/ticket-flow-system:latest
+              ghcr.io/sparshmajumdar/ticket-flow-system:${{ github.sha }}
 
 
   # =========================================================================
