@@ -20,6 +20,9 @@ concurrency:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+  actions: read
 
 jobs:
 
@@ -160,10 +163,10 @@ jobs:
 
 
   # =========================================================================
-  # CD STAGE 2: Continuous Deployment to GitHub Pages
+  # CD STAGE 2: Package and Upload GitHub Pages Artifact
   # =========================================================================
-  deploy-pages:
-    name: Deploy to GitHub Pages (CD)
+  package-pages:
+    name: Package GitHub Pages Artifact
 
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
 
@@ -171,18 +174,12 @@ jobs:
       - lint
       - test-and-build
       - docker-validation
-      - docker-publish
 
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout repository
@@ -196,6 +193,32 @@ jobs:
         with:
           path: frontend/
 
+
+  # =========================================================================
+  # CD STAGE 3: Deploy to GitHub Pages
+  # =========================================================================
+  deploy-pages:
+    name: Deploy to GitHub Pages (CD)
+
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+
+    needs:
+      - package-pages
+      - docker-publish
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      actions: read
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
