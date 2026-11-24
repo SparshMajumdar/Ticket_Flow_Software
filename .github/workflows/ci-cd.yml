@@ -119,12 +119,12 @@ jobs:
 
   # =========================================================================
   # CD STAGE 1: Publish Docker Image to GitHub Container Registry (GHCR)
-  # Only runs on pushes/manual runs to main after all CI checks pass
+  # Runs on pushes and manual triggers after all CI checks pass
   # =========================================================================
   docker-publish:
     name: Publish Docker Image to GHCR
 
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     needs:
       - lint
@@ -168,7 +168,7 @@ jobs:
   package-pages:
     name: Package GitHub Pages Artifact
 
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     needs:
       - lint
@@ -200,11 +200,15 @@ jobs:
   deploy-pages:
     name: Deploy to GitHub Pages (CD)
 
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     needs:
       - package-pages
       - docker-publish
+
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
 
     runs-on: ubuntu-latest
 
@@ -230,5 +234,5 @@ jobs:
           echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Deployed To**: GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "- **Live URL**: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Docker Image**: ghcr.io/${{ github.repository_owner }}/ticket-flow-system:latest" >> $GITHUB_STEP_SUMMARY
+          echo "- **Docker Image**: ghcr.io/sparshmajumdar/ticket-flow-system:latest" >> $GITHUB_STEP_SUMMARY
           echo "- **Timestamp**: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_STEP_SUMMARY
