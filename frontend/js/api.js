@@ -19,23 +19,31 @@ const Api = (function () {
     API_BASE_URL: 'http://localhost:5000/api'
   };
 
+  let isStorageInitialized = false;
+
   // Initialize storage if empty
   function initStorage() {
-    if (!localStorage.getItem(STORAGE_KEYS.TICKETS)) {
-      localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(INITIAL_TICKETS));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS)) {
-      localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.CUSTOMERS)) {
-      localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify([
-        { ...INITIAL_USERS.customer, password: 'password123' },
-        { id: 'usr_9420', name: 'Robert Hastings', email: 'robert@globex.io', company: 'Globex Corp', role: 'customer', avatarText: 'RH', password: 'password123' },
-        { id: 'usr_9430', name: 'Michael Chen', email: 'mchen@infinisys.com', company: 'InfiniSys Global', role: 'customer', avatarText: 'MC', password: 'password123' }
-      ]));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.STAFF)) {
-      localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(INITIAL_USERS.staff));
+    if (isStorageInitialized) return;
+    try {
+      if (!localStorage.getItem(STORAGE_KEYS.TICKETS)) {
+        localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(INITIAL_TICKETS));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS)) {
+        localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.CUSTOMERS)) {
+        localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify([
+          { ...INITIAL_USERS.customer, password: 'password123' },
+          { id: 'usr_9420', name: 'Robert Hastings', email: 'robert@globex.io', company: 'Globex Corp', role: 'customer', avatarText: 'RH', password: 'password123' },
+          { id: 'usr_9430', name: 'Michael Chen', email: 'mchen@infinisys.com', company: 'InfiniSys Global', role: 'customer', avatarText: 'MC', password: 'password123' }
+        ]));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.STAFF)) {
+        localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(INITIAL_USERS.staff));
+      }
+      isStorageInitialized = true;
+    } catch (e) {
+      console.warn('LocalStorage unavailable or restricted', e);
     }
   }
 
@@ -45,8 +53,9 @@ const Api = (function () {
     initStorage();
     try {
       const tickets = JSON.parse(localStorage.getItem(STORAGE_KEYS.TICKETS) || '[]');
+      const now = Date.now();
       // Dynamically re-calculate minutes remaining on every load
-      return tickets.map(t => calculateSla(t));
+      return tickets.map(t => calculateSla(t, now));
     } catch (e) {
       console.error('Error loading tickets from localStorage', e);
       return [];
@@ -57,9 +66,9 @@ const Api = (function () {
     localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
   }
 
-  function calculateSla(ticket) {
+  function calculateSla(ticket, referenceNow) {
     if (!ticket.sla || !ticket.sla.deadline) return ticket;
-    const now = Date.now();
+    const now = typeof referenceNow === 'number' ? referenceNow : Date.now();
     const deadline = new Date(ticket.sla.deadline).getTime();
     const diffMinutes = Math.round((deadline - now) / 60000);
 
@@ -448,20 +457,35 @@ const Api = (function () {
       return updated;
     },
 
-    async getMetrics() {
-      const tickets = loadTickets();
-      const total = tickets.length;
-      const open = tickets.filter(t => t.status === 'Open').length;
-      const assigned = tickets.filter(t => t.status === 'Assigned').length;
-      const inProgress = tickets.filter(t => t.status === 'In Progress').length;
-      const pending = tickets.filter(t => t.status === 'Pending Customer').length;
-      const resolved = tickets.filter(t => t.status === 'Resolved').length;
-      const closed = tickets.filter(t => t.status === 'Closed').length;
-      const escalated = tickets.filter(t => t.status === 'Escalated').length;
-      const atRiskOrOverdue = tickets.filter(t => t.sla.state === 'At Risk' || t.sla.state === 'Overdue').length;
+    async getMetrics(preloadedTickets) {
+      const tickets = preloadedTickets || loadTickets();
+      let open = 0;
+      let assigned = 0;
+      let inProgress = 0;
+      let pending = 0;
+      let resolved = 0;
+      let closed = 0;
+      let escalated = 0;
+      let atRiskOrOverdue = 0;
+
+      for (let i = 0; i < tickets.length; i++) {
+        const t = tickets[i];
+        switch (t.status) {
+          case 'Open': open++; break;
+          case 'Assigned': assigned++; break;
+          case 'In Progress': inProgress++; break;
+          case 'Pending Customer': pending++; break;
+          case 'Resolved': resolved++; break;
+          case 'Closed': closed++; break;
+          case 'Escalated': escalated++; break;
+        }
+        if (t.sla && (t.sla.state === 'At Risk' || t.sla.state === 'Overdue')) {
+          atRiskOrOverdue++;
+        }
+      }
 
       return {
-        total,
+        total: tickets.length,
         open,
         assigned,
         inProgress,

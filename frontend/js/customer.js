@@ -13,13 +13,20 @@ const CustomerPortal = (function() {
   }
 
   function setupEventListeners() {
-    // Ticket Search
+    // Debounced Ticket Search
     const searchInput = document.getElementById('customerSearchInput');
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        searchQuery = e.target.value.toLowerCase();
-        renderCustomerTickets();
-      });
+      const handleSearch = (typeof SupportFlow !== 'undefined' && SupportFlow.debounce)
+        ? SupportFlow.debounce((val) => {
+            searchQuery = val.toLowerCase();
+            renderCustomerTickets();
+          }, 150)
+        : (val) => {
+            searchQuery = val.toLowerCase();
+            renderCustomerTickets();
+          };
+
+      searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
     }
 
     // Filter Tabs
@@ -158,9 +165,14 @@ const CustomerPortal = (function() {
       );
     }
 
-    // Update customer active metrics
-    const activeCount = filtered.filter(t => t.status !== 'Closed' && t.status !== 'Resolved').length;
-    const resolvedCount = filtered.filter(t => t.status === 'Resolved').length;
+    // Update customer active metrics in a single pass
+    let activeCount = 0;
+    let resolvedCount = 0;
+    for (let i = 0; i < filtered.length; i++) {
+      const st = filtered[i].status;
+      if (st !== 'Closed' && st !== 'Resolved') activeCount++;
+      if (st === 'Resolved') resolvedCount++;
+    }
     const metricActive = document.getElementById('custMetricActive');
     const metricResolved = document.getElementById('custMetricResolved');
     if (metricActive) metricActive.textContent = activeCount;
@@ -380,8 +392,11 @@ const CustomerPortal = (function() {
   }
 
   function escapeHtml(str) {
+    if (typeof SupportFlow !== 'undefined' && SupportFlow.escapeHtml) {
+      return SupportFlow.escapeHtml(str);
+    }
     if (!str) return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   return {

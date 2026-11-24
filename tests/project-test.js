@@ -180,3 +180,37 @@ test("CI/CD GitHub Actions workflow exists and contains required stages", () => 
     assert.match(workflowContent, /deploy-pages:/, "Must have deployment stage");
     assert.match(workflowContent, /docker-validation:/, "Must have Docker validation stage");
 });
+
+test("index.html and app.js enforce authentication redirect to login.html", () => {
+    const indexHtml = fs.readFileSync(path.join(projectRoot, "frontend/index.html"), "utf8");
+    assert.match(indexHtml, /localStorage\.getItem\(['"]supportflow_session_v1['"]\)/, "index.html must check session");
+    assert.match(indexHtml, /window\.location\.replace\(['"]login\.html['"]\)/, "index.html must redirect to login.html when no session");
+
+    const appJs = fs.readFileSync(path.join(projectRoot, "frontend/js/app.js"), "utf8");
+    assert.match(appJs, /Api\.getSession\(\)/, "app.js must verify active session");
+    assert.match(appJs, /window\.location\.replace\(['"]login\.html['"]\)/, "app.js must redirect to login.html if unauthenticated");
+});
+
+test("Nginx production configuration exists and contains gzip and security headers", () => {
+    const nginxPath = path.join(projectRoot, "nginx.conf");
+    assert.equal(fs.existsSync(nginxPath), true, "nginx.conf should exist");
+
+    const nginxContent = fs.readFileSync(nginxPath, "utf8");
+    assert.match(nginxContent, /gzip on;/, "Nginx must enable gzip compression");
+    assert.match(nginxContent, /X-Content-Type-Options/, "Nginx must set security headers");
+    assert.match(nginxContent, /location = \/healthz/, "Nginx must define /healthz endpoint");
+});
+
+test("SupportFlow utilities provide security escaping and debounce", () => {
+    const mainJsPath = path.join(projectRoot, "frontend/js/main.js");
+    const code = fs.readFileSync(mainJsPath, "utf8");
+    const sandbox = { module: { exports: {} } };
+    vm.createContext(sandbox);
+    vm.runInContext(code, sandbox);
+
+    const sf = sandbox.module.exports;
+    assert.ok(sf, "SupportFlow module must be exported");
+    assert.equal(typeof sf.escapeHtml, "function", "escapeHtml must be a function");
+    assert.equal(sf.escapeHtml("<script>'test'&\""), "&lt;script&gt;&#39;test&#39;&amp;&quot;");
+    assert.equal(typeof sf.debounce, "function", "debounce must be a function");
+});

@@ -15,13 +15,20 @@ const AdminPortal = (function() {
   }
 
   function setupEventListeners() {
-    // Admin Search Input
+    // Debounced Admin Search Input
     const searchInput = document.getElementById('adminSearchInput');
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        searchQuery = e.target.value.toLowerCase();
-        renderMasterQueue();
-      });
+      const handleSearch = (typeof SupportFlow !== 'undefined' && SupportFlow.debounce)
+        ? SupportFlow.debounce((val) => {
+            searchQuery = val.toLowerCase();
+            renderMasterQueue();
+          }, 150)
+        : (val) => {
+            searchQuery = val.toLowerCase();
+            renderMasterQueue();
+          };
+
+      searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
     }
 
     // Filter Pills
@@ -66,17 +73,24 @@ const AdminPortal = (function() {
     if (!listEl) return;
 
     const tickets = await Api.getTickets();
-    const metrics = await Api.getMetrics();
+    const metrics = await Api.getMetrics(tickets);
 
-    // Update Top Operational Metric Cards
+    // Update Top Operational Metric Cards in a single efficient pass
     const mActive = document.getElementById('adminMetricActive');
     const mUnassigned = document.getElementById('adminMetricUnassigned');
     const mRisk = document.getElementById('adminMetricRisk');
     const mEscalated = document.getElementById('adminMetricEscalated');
 
-    const unassignedCount = tickets.filter(t => !t.assignedEmployee && t.status !== 'Closed').length;
-    const atRiskCount = tickets.filter(t => (t.sla.state === 'At Risk' || t.sla.state === 'Overdue') && t.status !== 'Closed').length;
-    const escalatedCount = tickets.filter(t => t.status === 'Escalated').length;
+    let unassignedCount = 0;
+    let atRiskCount = 0;
+    for (let i = 0; i < tickets.length; i++) {
+      const t = tickets[i];
+      if (t.status !== 'Closed') {
+        if (!t.assignedEmployee) unassignedCount++;
+        if (t.sla && (t.sla.state === 'At Risk' || t.sla.state === 'Overdue')) atRiskCount++;
+      }
+    }
+    const escalatedCount = metrics.escalated;
 
     if (mActive) mActive.textContent = metrics.active;
     if (mUnassigned) mUnassigned.textContent = unassignedCount;
@@ -458,8 +472,11 @@ const AdminPortal = (function() {
   }
 
   function escapeHtml(str) {
+    if (typeof SupportFlow !== 'undefined' && SupportFlow.escapeHtml) {
+      return SupportFlow.escapeHtml(str);
+    }
     if (!str) return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   return {

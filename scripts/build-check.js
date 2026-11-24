@@ -17,6 +17,7 @@ const requiredFiles = [
     "frontend/js/main.js",
     "Dockerfile",
     "docker-compose.yml",
+    "nginx.conf",
     ".github/workflows/ci-cd.yml"
 ];
 

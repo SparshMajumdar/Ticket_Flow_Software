@@ -5,6 +5,9 @@ FROM nginx:alpine
 LABEL maintainer="SupportFlow Engineering"
 LABEL description="Customer Support Ticket Management System Frontend"
 
+# Copy custom high-performance Nginx configuration with gzip and security headers
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy frontend distribution assets to Nginx html directory
 COPY frontend/ /usr/share/nginx/html/
 
@@ -13,7 +16,7 @@ EXPOSE 80
 
 # Container healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://127.0.0.1:80/index.html || exit 1
+  CMD wget --quiet --tries=1 --spider http://127.0.0.1:80/healthz || wget --quiet --tries=1 --spider http://127.0.0.1:80/index.html || exit 1
 
 # Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]

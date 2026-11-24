@@ -8,6 +8,13 @@ const App = (function() {
   let currentStaffView = 'queue'; // 'queue' or 'analytics'
 
   function init() {
+    // Authentication guard: verify active session before initializing application
+    const session = Api.getSession();
+    if (!session) {
+      window.location.replace('login.html');
+      return;
+    }
+
     setupRoleSwitcher();
     setupSubNav();
     setupKeyboardShortcuts();
@@ -22,9 +29,8 @@ const App = (function() {
     // Initial render based on URL parameter or stored session
     const urlParams = new URLSearchParams(window.location.search);
     const roleParam = urlParams.get('role');
-    const session = Api.getSession();
 
-    if (roleParam === 'staff' || (!roleParam && session && session.role === 'staff')) {
+    if (roleParam === 'staff' || (!roleParam && session.role === 'staff')) {
       setRole('staff');
     } else {
       setRole('customer');
@@ -65,10 +71,10 @@ const App = (function() {
     const staffBtn = document.getElementById('roleBtnStaff');
 
     if (custBtn) {
-      custBtn.addEventListener('click', () => setRole('customer'));
+      custBtn.addEventListener('click', () => setRole('customer', true));
     }
     if (staffBtn) {
-      staffBtn.addEventListener('click', () => setRole('staff'));
+      staffBtn.addEventListener('click', () => setRole('staff', true));
     }
   }
 
@@ -88,7 +94,7 @@ const App = (function() {
     }
   }
 
-  function setRole(role) {
+  function setRole(role, notify = false) {
     currentRole = role;
 
     const custBtn = document.getElementById('roleBtnCustomer');
@@ -125,7 +131,7 @@ const App = (function() {
       if (staffSubNav) staffSubNav.style.display = 'none';
 
       CustomerPortal.renderCustomerTickets();
-      showToast('Switched to Customer Desk');
+      if (notify) showToast('Switched to Customer Desk');
     } else {
       if (staffBtn) staffBtn.classList.add('active');
       if (custBtn) custBtn.classList.remove('active');
@@ -142,7 +148,7 @@ const App = (function() {
       if (staffSubNav) staffSubNav.style.display = 'flex';
 
       setStaffView(currentStaffView, false);
-      showToast('Switched to Admin Operations Desk');
+      if (notify) showToast('Switched to Admin Operations Desk');
     }
   }
 
